@@ -38,6 +38,10 @@ The setup and run scripts only invoke local Python code. They do not install
 packages, create a persistent background task, use credentials, execute
 transactions, or send notifications.
 
+On a fresh Windows machine, script execution may be blocked by policy. Run
+`powershell -ExecutionPolicy Bypass -File .\setup.ps1` (and the same for the
+other `.ps1` scripts), or change the policy for your user account yourself.
+
 ```powershell
 py -3 sniper_ai.py market_data.example.json
 ```
@@ -66,6 +70,38 @@ configuration errors are reported on standard error with a nonzero exit code.
 No report or account state is saved unless `--output` is provided.
 The scheduled runner is the exception: it writes its timestamped run artifacts
 to `paper_runs` unless `--output-dir` is specified.
+
+## Recurring loop (paper only)
+
+`run_loop.py` repeatedly invokes the one-shot runner on a fixed cadence and
+writes a timestamped report, message drafts, and a `loop.log` for every run.
+It is a foreground process; stop it with Ctrl+C. It does not install itself as
+a service or scheduled task.
+
+```powershell
+# 3 runs, 60 seconds apart
+.\run_loop.ps1 -Runs 3 -IntervalSeconds 60
+
+# run continuously, one run per hour
+.\run_loop.ps1 -IntervalSeconds 3600
+
+# stop automatically at a cumulative target (abstract units, not USD)
+.\run_loop.ps1 -IntervalSeconds 3600 -TargetUnits 1
+
+# direct Python equivalent
+py -3 run_loop.py --interval 3600 --runs 0
+```
+
+A lock file (`.loop.lock` in the output directory) prevents two loops from
+writing to the same directory. If a loop crashed and left a stale lock, start
+with `--force` / `-Force` after confirming no other loop is running.
+
+**About the "$0.97 to $10.1B" / "1 billion per week" claim:** that line is
+marketing text in the repository description, not a feature in this code.
+There is no live trading, wallet, key handling, or market execution here, and
+no weekly target is defined anywhere in the project. `--target-units` only
+tracks cumulative profit from synthetic price paths in abstract units; it is
+a stop condition for the simulation, not a financial forecast or promise.
 
 ## Input format
 
