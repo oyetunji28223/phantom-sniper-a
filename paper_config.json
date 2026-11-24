@@ -1,0 +1,29 @@
+{
+  "starting_capital": 0.97,
+  "allocation_fraction": 0.1,
+  "fee_bps": 100,
+  "minimum_liquidity_units": 100.0,
+  "minimum_volume_liquidity_ratio": 0.05,
+  "maximum_candidates": 5,
+  "stop_loss_fraction": 0.1,
+  "profit_reserve_fraction": 0.1,
+  "virtual_wallets": [
+    "paper-wallet-1",
+    "paper-wallet-2",
+    "paper-wallet-3"
+  ],
+  "take_profit_waves": [
+    {
+      "gain_fraction": 0.1,
+      "position_fraction": 0.25
+    },
+    {
+      "gain_fraction": 0.2,
+      "position_fraction": 0.25
+    },
+    {
+      "gain_fraction": 0.3,
+      "position_fraction": 0.25
+    }
+  ]
+}
